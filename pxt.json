@@ -1,0 +1,40 @@
+{
+    "name": "Bluetooth",
+    "description": "",
+    "dependencies": {
+        "core": "*",
+        "microphone": "*",
+        "maqueen": "github:dfrobot/pxt-maqueen#v1.7.0",
+        "joystickbit": "github:tinkertanker/pxt-joystickbit#v1.0.1",
+        "radio": "*",
+        "neopixel": "github:Microsoft/pxt-neopixel#v0.7.3"
+    },
+    "files": [
+        "main.blocks",
+        "main.ts",
+        "README.md",
+        "main.py"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "targetVersions": {
+        "target": "4.0.17",
+        "targetId": "microbit"
+    },
+    "supportedTargets": [
+        "microbit"
+    ],
+    "preferredEditor": "blocksprj",
+    "yotta": {
+        "config": {
+            "microbit-dal": {
+                "bluetooth": {
+                    "open": 1,
+                    "whitelist": 0,
+                    "security_level": null
+                }
+            }
+        }
+    }
+}
