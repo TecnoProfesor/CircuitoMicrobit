@@ -32,32 +32,59 @@ radio.onReceivedNumber(function (receivedNumber) {
 })
 function Avanza (velocidad: number) {
     maqueen.motorRun(maqueen.Motors.All, maqueen.Dir.CW, velocidad)
-    if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1) {
-        izqoscuro = 1
-    } else {
-        izqoscuro = 0
-    }
-    if (maqueen.readPatrol(maqueen.Patrol.PatrolRight) == 1) {
-        deroscuro = 1
-    } else {
-        deroscuro = 0
-    }
-    while (izqoscuro == 0 || deroscuro == 0) {
+    finaltrayecto = 0
+    while (finaltrayecto == 0) {
+        while (izqoscuro == 0 || deroscuro == 0) {
+            if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1) {
+                izqoscuro = 1
+                maqueen.motorStop(maqueen.Motors.M2)
+                basic.pause(50)
+                maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CW, velocidad)
+            } else {
+                izqoscuro = 0
+            }
+            if (maqueen.readPatrol(maqueen.Patrol.PatrolRight) == 1) {
+                deroscuro = 1
+                maqueen.motorStop(maqueen.Motors.M1)
+                basic.pause(50)
+                maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CW, velocidad)
+            } else {
+                deroscuro = 0
+            }
+        }
+        maqueen.motorStop(maqueen.Motors.All)
+        maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CCW, 25)
+        maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CW, 25)
+        basic.pause(600)
+        maqueen.motorStop(maqueen.Motors.All)
         if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1) {
             izqoscuro = 1
-            maqueen.motorStop(maqueen.Motors.M2)
-            basic.pause(50)
-            maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CW, velocidad)
         } else {
             izqoscuro = 0
         }
         if (maqueen.readPatrol(maqueen.Patrol.PatrolRight) == 1) {
             deroscuro = 1
-            maqueen.motorStop(maqueen.Motors.M1)
-            basic.pause(50)
-            maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CW, velocidad)
         } else {
             deroscuro = 0
+        }
+        if (izqoscuro == 1 && deroscuro == 1) {
+            maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CW, 25)
+            maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CCW, 25)
+            basic.pause(1200)
+            maqueen.motorStop(maqueen.Motors.All)
+            if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1) {
+                izqoscuro = 1
+            } else {
+                izqoscuro = 0
+            }
+            if (maqueen.readPatrol(maqueen.Patrol.PatrolRight) == 1) {
+                deroscuro = 1
+            } else {
+                deroscuro = 0
+            }
+        }
+        if (izqoscuro == 1 && deroscuro == 1) {
+            finaltrayecto = 1
         }
     }
     maqueen.motorStop(maqueen.Motors.All)
@@ -253,11 +280,14 @@ let BLUE = 0
 let GREEN = 0
 let RED = 0
 let mostrarFANTEC = 0
+let finaltrayecto = 0
 let deroscuro = 0
 let izqoscuro = 0
 let master = 0
 let strip: neopixel.Strip = null
 music.setVolume(255)
 strip = neopixel.create(DigitalPin.P15, 4, NeoPixelMode.RGB)
-master = 1
+master = 2
+izqoscuro = 0
+deroscuro = 0
 radio.setGroup(1)
