@@ -1,12 +1,20 @@
+let master = 0
+let inicioavance = 0
+let izqoscuro = 0
+let deroscuro = 0
+let mostrarFANTEC = 0
+let RED = 0
+let GREEN = 0
+let BLUE = 0
 radio.onReceivedNumber(function (receivedNumber) {
     if (master == Math.trunc(receivedNumber / 10)) {
         if (receivedNumber % 10 == 1) {
             basic.showIcon(IconNames.Happy)
             soundExpression.giggle.playUntilDone()
-            Avanza(30)
-            GiraIzq(25)
-            Avanza(30)
-            GiraIzq(25)
+            Avanza(40)
+            GiraIzq(30)
+            Avanza(40)
+            GiraIzq(30)
             basic.showIcon(IconNames.Heart)
             basic.pause(5000)
             basic.showString("")
@@ -32,31 +40,27 @@ radio.onReceivedNumber(function (receivedNumber) {
 })
 function Avanza (velocidad: number) {
     maqueen.motorRun(maqueen.Motors.All, maqueen.Dir.CW, velocidad)
-    finaltrayecto = 0
-    while (finaltrayecto == 0) {
-        while (izqoscuro == 0 || deroscuro == 0) {
-            if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1) {
-                izqoscuro = 1
-                maqueen.motorStop(maqueen.Motors.M2)
-                basic.pause(50)
-                maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CW, velocidad)
-            } else {
-                izqoscuro = 0
-            }
-            if (maqueen.readPatrol(maqueen.Patrol.PatrolRight) == 1) {
-                deroscuro = 1
-                maqueen.motorStop(maqueen.Motors.M1)
-                basic.pause(50)
-                maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CW, velocidad)
-            } else {
-                deroscuro = 0
-            }
+    inicioavance = input.runningTime()
+    while (input.magneticForce(Dimension.Y) <= 0 || input.runningTime() <= inicioavance + 2000) {
+        if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1) {
+            maqueen.motorStop(maqueen.Motors.M2)
+            basic.pause(50)
+            maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CW, velocidad)
+            izqoscuro = 1
+        } else {
+            izqoscuro = 0
         }
-        maqueen.motorStop(maqueen.Motors.All)
-        maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CCW, 25)
-        maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CW, 25)
-        basic.pause(600)
-        maqueen.motorStop(maqueen.Motors.All)
+        if (maqueen.readPatrol(maqueen.Patrol.PatrolRight) == 1) {
+            maqueen.motorStop(maqueen.Motors.M1)
+            basic.pause(50)
+            maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CW, velocidad)
+            deroscuro = 1
+        } else {
+            deroscuro = 0
+        }
+    }
+    maqueen.motorRun(maqueen.Motors.All, maqueen.Dir.CW, 25)
+    while (izqoscuro == 0 || deroscuro == 0) {
         if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1) {
             izqoscuro = 1
         } else {
@@ -66,44 +70,14 @@ function Avanza (velocidad: number) {
             deroscuro = 1
         } else {
             deroscuro = 0
-        }
-        if (izqoscuro == 1 && deroscuro == 1) {
-            maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CW, 25)
-            maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CCW, 25)
-            basic.pause(1200)
-            maqueen.motorStop(maqueen.Motors.All)
-            if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1) {
-                izqoscuro = 1
-            } else {
-                izqoscuro = 0
-            }
-            if (maqueen.readPatrol(maqueen.Patrol.PatrolRight) == 1) {
-                deroscuro = 1
-            } else {
-                deroscuro = 0
-            }
-        }
-        if (izqoscuro == 1 && deroscuro == 1) {
-            finaltrayecto = 1
         }
     }
     maqueen.motorStop(maqueen.Motors.All)
 }
 function GiraIzq (velocidad: number) {
-    maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CW, velocidad)
-    maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CCW, velocidad)
-    while (izqoscuro == 1 || deroscuro == 1) {
-        if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1) {
-            izqoscuro = 1
-        } else {
-            izqoscuro = 0
-        }
-        if (maqueen.readPatrol(maqueen.Patrol.PatrolRight) == 1) {
-            deroscuro = 1
-        } else {
-            deroscuro = 0
-        }
-    }
+    maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CW, 40)
+    maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CCW, 40)
+    basic.pause(1500)
     maqueen.motorStop(maqueen.Motors.All)
 }
 function GiroDer (velocidad: number) {
@@ -193,16 +167,17 @@ input.onLogoEvent(TouchButtonEvent.Touched, function () {
         radio.sendNumber(61)
         basic.showIcon(IconNames.Happy)
         soundExpression.giggle.playUntilDone()
-        Avanza(30)
-        GiraIzq(25)
-        Avanza(30)
-        GiraIzq(25)
+        Avanza(40)
+        GiraIzq(30)
+        Avanza(40)
+        GiraIzq(30)
         basic.showIcon(IconNames.Heart)
         basic.pause(5000)
         basic.showString("")
     }
 })
 function NeoPixel () {
+    let strip: neopixel.Strip = null
     mostrarFANTEC = 1
     for (let index = 0; index < 5; index++) {
         RED = 0
@@ -276,18 +251,6 @@ function NeoPixel () {
 // Mensajes:
 // 21,22,23, etc -> mensajes 1,2,3 al dispositivo 2
 // 31,32,33, etc -> mensajes 1,2,3 al dispositivo 3
-let BLUE = 0
-let GREEN = 0
-let RED = 0
-let mostrarFANTEC = 0
-let finaltrayecto = 0
-let deroscuro = 0
-let izqoscuro = 0
-let master = 0
-let strip: neopixel.Strip = null
-music.setVolume(255)
-strip = neopixel.create(DigitalPin.P15, 4, NeoPixelMode.RGB)
-master = 2
-izqoscuro = 0
-deroscuro = 0
-radio.setGroup(1)
+basic.forever(function () {
+    basic.showNumber(input.rotation(Rotation.Roll))
+})
