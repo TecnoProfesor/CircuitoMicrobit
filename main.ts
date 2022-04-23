@@ -1,11 +1,3 @@
-let master = 0
-let inicioavance = 0
-let izqoscuro = 0
-let deroscuro = 0
-let mostrarFANTEC = 0
-let RED = 0
-let GREEN = 0
-let BLUE = 0
 radio.onReceivedNumber(function (receivedNumber) {
     if (master == Math.trunc(receivedNumber / 10)) {
         if (receivedNumber % 10 == 1) {
@@ -41,7 +33,7 @@ radio.onReceivedNumber(function (receivedNumber) {
 function Avanza (velocidad: number) {
     maqueen.motorRun(maqueen.Motors.All, maqueen.Dir.CW, velocidad)
     inicioavance = input.runningTime()
-    while (input.magneticForce(Dimension.Y) <= 0 || input.runningTime() <= inicioavance + 2000) {
+    while (input.magneticForce(Dimension.X) <= 100 || input.runningTime() <= inicioavance + 2000) {
         if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1) {
             maqueen.motorStop(maqueen.Motors.M2)
             basic.pause(50)
@@ -177,7 +169,6 @@ input.onLogoEvent(TouchButtonEvent.Touched, function () {
     }
 })
 function NeoPixel () {
-    let strip: neopixel.Strip = null
     mostrarFANTEC = 1
     for (let index = 0; index < 5; index++) {
         RED = 0
@@ -251,6 +242,22 @@ function NeoPixel () {
 // Mensajes:
 // 21,22,23, etc -> mensajes 1,2,3 al dispositivo 2
 // 31,32,33, etc -> mensajes 1,2,3 al dispositivo 3
+let BLUE = 0
+let GREEN = 0
+let RED = 0
+let mostrarFANTEC = 0
+let inicioavance = 0
+let deroscuro = 0
+let izqoscuro = 0
+let master = 0
+let strip: neopixel.Strip = null
+basic.showNumber(input.magneticForce(Dimension.Y))
+music.setVolume(255)
+strip = neopixel.create(DigitalPin.P15, 4, NeoPixelMode.RGB)
+master = 2
+izqoscuro = 0
+deroscuro = 0
+radio.setGroup(1)
 basic.forever(function () {
     basic.showNumber(input.rotation(Rotation.Roll))
 })
