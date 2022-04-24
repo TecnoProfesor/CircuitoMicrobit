@@ -33,7 +33,7 @@ radio.onReceivedNumber(function (receivedNumber) {
 function Avanza (velocidad: number) {
     maqueen.motorRun(maqueen.Motors.All, maqueen.Dir.CW, velocidad)
     inicioavance = input.runningTime()
-    while (input.magneticForce(Dimension.X) <= 100 || input.runningTime() <= inicioavance + 2000) {
+    while (Math.abs(input.magneticForce(Dimension.X)) <= 100 || input.runningTime() <= inicioavance + 2000) {
         if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1) {
             maqueen.motorStop(maqueen.Motors.M2)
             basic.pause(50)
@@ -54,6 +54,29 @@ function Avanza (velocidad: number) {
     maqueen.motorRun(maqueen.Motors.All, maqueen.Dir.CW, 25)
     while (izqoscuro == 0 || deroscuro == 0) {
         if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1) {
+            maqueen.motorStop(maqueen.Motors.M2)
+            basic.pause(50)
+            maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CW, velocidad)
+            izqoscuro = 1
+        } else {
+            izqoscuro = 0
+        }
+        if (maqueen.readPatrol(maqueen.Patrol.PatrolRight) == 1) {
+            maqueen.motorStop(maqueen.Motors.M1)
+            basic.pause(50)
+            maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CW, velocidad)
+            deroscuro = 1
+        } else {
+            deroscuro = 0
+        }
+    }
+    maqueen.motorStop(maqueen.Motors.All)
+}
+function GiraIzq (velocidad: number) {
+    maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CW, velocidad)
+    maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CCW, velocidad)
+    while (izqoscuro == 1 || deroscuro == 1) {
+        if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1) {
             izqoscuro = 1
         } else {
             izqoscuro = 0
@@ -64,12 +87,6 @@ function Avanza (velocidad: number) {
             deroscuro = 0
         }
     }
-    maqueen.motorStop(maqueen.Motors.All)
-}
-function GiraIzq (velocidad: number) {
-    maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CW, 40)
-    maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CCW, 40)
-    basic.pause(1500)
     maqueen.motorStop(maqueen.Motors.All)
 }
 function GiroDer (velocidad: number) {
@@ -251,13 +268,16 @@ let deroscuro = 0
 let izqoscuro = 0
 let master = 0
 let strip: neopixel.Strip = null
-basic.showNumber(input.magneticForce(Dimension.Y))
+basic.showNumber(input.magneticForce(Dimension.X))
 music.setVolume(255)
 strip = neopixel.create(DigitalPin.P15, 4, NeoPixelMode.RGB)
 master = 2
 izqoscuro = 0
 deroscuro = 0
 radio.setGroup(1)
-basic.forever(function () {
-    basic.showNumber(input.rotation(Rotation.Roll))
-})
+for (let index = 0; index < 4; index++) {
+    Avanza(40)
+    GiraIzq(20)
+    Avanza(40)
+    GiraIzq(20)
+}
