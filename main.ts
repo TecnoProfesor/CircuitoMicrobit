@@ -3,10 +3,10 @@ radio.onReceivedNumber(function (receivedNumber) {
         if (receivedNumber % 10 == 1) {
             basic.showIcon(IconNames.Happy)
             soundExpression.giggle.playUntilDone()
-            Avanza(40)
-            GiraIzq(30)
-            Avanza(40)
-            GiraIzq(30)
+            Avanza(60)
+            GiraIzq(20)
+            Avanza(60)
+            GiraIzq(20)
             basic.showIcon(IconNames.Heart)
             basic.pause(5000)
             basic.showString("")
@@ -176,10 +176,10 @@ input.onLogoEvent(TouchButtonEvent.Touched, function () {
         radio.sendNumber(61)
         basic.showIcon(IconNames.Happy)
         soundExpression.giggle.playUntilDone()
-        Avanza(40)
-        GiraIzq(30)
-        Avanza(40)
-        GiraIzq(30)
+        Avanza(60)
+        GiraIzq(20)
+        Avanza(60)
+        GiraIzq(20)
         basic.showIcon(IconNames.Heart)
         basic.pause(5000)
         basic.showString("")
@@ -271,13 +271,7 @@ let strip: neopixel.Strip = null
 basic.showNumber(input.magneticForce(Dimension.X))
 music.setVolume(255)
 strip = neopixel.create(DigitalPin.P15, 4, NeoPixelMode.RGB)
-master = 2
+master = 1
 izqoscuro = 0
 deroscuro = 0
 radio.setGroup(1)
-for (let index = 0; index < 4; index++) {
-    Avanza(40)
-    GiraIzq(20)
-    Avanza(40)
-    GiraIzq(20)
-}
