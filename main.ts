@@ -87,6 +87,9 @@ function GiraIzq (velocidad: number) {
             deroscuro = 0
         }
     }
+    maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CCW, velocidad)
+    maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CW, velocidad)
+    basic.pause(200)
     maqueen.motorStop(maqueen.Motors.All)
 }
 function GiroDer (velocidad: number) {
@@ -275,3 +278,9 @@ master = 1
 izqoscuro = 0
 deroscuro = 0
 radio.setGroup(1)
+for (let index = 0; index < 4; index++) {
+    Avanza(40)
+    GiraIzq(30)
+    Avanza(40)
+    GiraIzq(30)
+}
